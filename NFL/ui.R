@@ -7,6 +7,7 @@ library(dplyr)
 library(magrittr)
 library(ggplot2)
 library(bslib)
+library(DT)
 
 # Define UI for application that draws a histogram
 shinyUI(fluidPage(
@@ -15,14 +16,21 @@ shinyUI(fluidPage(
     theme = bs_theme(bootswatch = "sandstone"),
     
     # Application title
-    titlePanel("NFL Data Exploration"),
+    titlePanel("NFL Super Bowl Data Explorer"),
     
-    # Sidebar with a slider input for number of bins
+    # Side bar Layout
     sidebarLayout(
         sidebarPanel(
             selectInput("yearx", label = "Game Year", 
                         choices = c("All","2000","2001","2002","2003","2004","2005","2006","2007","2008","2009","2010","2011","2012","2013","2014","2015","2016","2017","2018","2019","2020"),
-                        selected = "All")
+                        selected = "All"),
+            h6("Show Filters"),
+            checkboxInput("show_filters",label=NULL,value=FALSE),
+                conditionalPanel("input.show_filters",
+                    checkboxGroupInput(
+                    'show_vars','Columns in data to show',
+                    c("home_team", "away_team", "season_type", "game_date","game_year","play_type"),selected=c("home_team", "away_team", "season_type", "game_date","game_year","play_type")
+                )),
         ),
         # Show a plot of the generated distribution
         mainPanel(
@@ -57,8 +65,10 @@ shinyUI(fluidPage(
                        ),
                        tabPanel("Data",
                                 #Scroll through data set
+                                h2("Super Bowl Data"),
+                                DT::dataTableOutput("mytable")
                                 #Subset data set (rows and columns)
-                                #Save subsetted data as a file (.csv)
+                                #Save subset data as a file (.csv)
                        )
             ))
     )
