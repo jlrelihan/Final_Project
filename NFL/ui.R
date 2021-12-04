@@ -22,7 +22,7 @@ shinyUI(fluidPage(
     sidebarLayout(
         sidebarPanel(
             selectInput("yearx", label = "Game Year", 
-                        choices = c("All","2000","2001","2002","2003","2004","2005","2006","2007","2008","2009","2010","2011","2012","2013","2014","2015","2016","2017","2018","2019","2020"),
+                        choices = c("All","2001","2002","2003","2004","2005","2006","2007","2008","2009","2010","2011","2012","2013","2014","2015","2016","2017","2018","2019","2020"),
                         selected = "All"),
             h6("Show Filters"),
             checkboxInput("show_filters",label=NULL,value=FALSE),
@@ -31,6 +31,7 @@ shinyUI(fluidPage(
                     'show_vars','Columns in data to show',
                     c("home_team", "away_team", "season_type", "game_date","game_year","play_type"),selected=c("home_team", "away_team", "season_type", "game_date","game_year","play_type")
                 )),
+            downloadButton("downloaddata","Download Data")
         ),
         # Show a plot of the generated distribution
         mainPanel(
