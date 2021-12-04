@@ -22,6 +22,7 @@ shinyServer(function(input, output) {
     # Create a cleaned up date column for just the year.
     super_bowl <- super_bowl %>% separate(game_date, into = c("game_year"), sep = "-", remove = FALSE)
 
+    
     # Information for About Page
     #create text info
     output$purpose <- renderText({
@@ -30,8 +31,7 @@ shinyServer(function(input, output) {
         
     })
     
-    # Data table to scroll through
-    output$mytable <- DT::renderDataTable({
+    datasetInput <- reactive(
         if(input$show_filters == FALSE & input$yearx == "All") {
             newData <- super_bowl
             newData
@@ -48,12 +48,17 @@ shinyServer(function(input, output) {
             newData <- super_bowl %>% filter(game_year == input$yearx)
             newData[,input$show_vars]
         }
+    )
+    
+    # Data table to scroll through
+    output$mytable <- DT::renderDataTable({
+        datasetInput()
     })
     # Download data button
     output$downloaddata <- downloadHandler(
         filename = "data",
         content = function(file) {
-            write.csv(newData, file, row.names = FALSE)
+            write.csv(datasetInput(), file, row.names = FALSE)
         }
     )
     
