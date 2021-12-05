@@ -48,10 +48,9 @@ shinyUI(fluidPage(
                             ),
                             mainPanel(
                                 h2("Final Scores for the last 21 years of the Superbowl"),
-                                h5("Use search for year or team"),
                                 DT::dataTableOutput("teams"),
-                                h2(),
-                                plotOutput("bar_1")
+                                plotOutput("bar_1"),
+                                plotOutput("bar_2")
                             )
                         )
                ),
@@ -79,7 +78,7 @@ shinyUI(fluidPage(
                                 conditionalPanel("input.show_filters",
                                                  checkboxGroupInput(
                                                      'show_vars','Columns in data to show',
-                                                     c("home_team", "away_team", "season_type", "game_date","game_year","play_type","teams_playing"),selected=c("home_team", "away_team", "season_type", "game_date","game_year","play_type","teams_playing")
+                                                     c("home_team", "away_team", "season_type", "game_date","game_year","play_type","home_vs_away"),selected=c("home_team", "away_team", "season_type", "game_date","game_year","play_type","home_vs_away")
                                                  )),
                                 downloadButton("downloaddata","Download Data")
                             ),

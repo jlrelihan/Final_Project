@@ -59,29 +59,42 @@ shinyServer(function(input, output) {
     # Data Exploration Page
     
     # Getting a table of unique teams and game years
-    unique_teams <- select(super_bowl, home_vs_away, home_score, away_score, game_year, qtr, game_seconds_remaining, home_team, away_team )
-    # Filter dataset for final score
+    unique_teams <- select(super_bowl, home_vs_away, home_score, away_score, game_year, qtr, game_seconds_remaining, home_team, away_team, interception, penalty,sack,touchdown,fumble )
+    
+    # Filter data set for final score
     unique_teams <- filter(unique_teams, qtr==4, game_seconds_remaining==0)
+    
     # New column shows which team home or away won the game
     unique_teams <- mutate(unique_teams,winner= ifelse(unique_teams$home_score>unique_teams$away_score, "home","away"))
+    
     # New column shows which team won the game
+    unique_teams <- mutate(unique_teams,team_looser = ifelse(unique_teams$winner=="home",unique_teams$away_team,unique_teams$home_team))
+    
+    # New column shows which team lost the game
     unique_teams <- mutate(unique_teams,team_winner = ifelse(unique_teams$winner=="home",unique_teams$home_team,unique_teams$away_team))
     
     # Select only interested columns
     unique_teams <- select(unique_teams, home_vs_away, home_score, away_score, team_winner ,game_year)
     
-    # List of unique teams that played in the last 21 years of the Superbowl
+    # List of match ups in the last 21 years of the Superbowl
     output$teams <- renderDataTable({
         unique_teams
             })
 
     # Bar plot showing the winning teams that played in the last 21 years of the Superbowl.
     output$bar_1 <- renderPlot({
-        g <- ggplot(unique_teams, aes(x=team_winner))
-        g + geom_bar()
+        g <- ggplot(unique_teams, aes(x= forcats::fct_infreq(team_winner)))
+        g + geom_bar(aes(fill=team_winner)) + labs(title = "Total Wins by Team", x= "Team")
     }
-        
     )
+    
+    # Bar plot 2
+    output$bar_2 <- renderPlot({
+            g <- ggplot(super_bowl, aes(x= game_id))
+            g + geom_col(aes(y=touchdown, fill=td_team)) + labs(title="Total Touchdowns per Game",y="Touchdowns",x="Game ID")+ theme(axis.text.x=element_text(angle=90))
+        }
+    )
+    
     
     })
 
