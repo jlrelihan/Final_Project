@@ -28,7 +28,7 @@ shinyUI(fluidPage(
                         h5("The data used for this app is from the nflfastR package. The package contains NFL play-by-play data where you can access different game types including super bowl and regular season data. You can also access many years of data back to 1999. For more information: ", a(href = "https://www.nflfastr.com/","Click here")),
                         h2(strong("Tab Overview:")),
                         h4("Data Exploration"),
-                            h5("On this page you can view numerical and graphical summaries of the data."),
+                            h5("On this page you can view numerical and graphical summaries of the data. You can view total wins and loses by team. For each Superbowl game you can select different variables like touchdowns, sacks, interceptions, penalties, and fumbles. You can also see the roster across seasons where you can see the total EPA per player and filter by team, position, and game year. Last, you can see the final scores for the last 20 years of the Superbowl."),
                         h4("Modeling"),
                             h5("In each tab of this page you can view the three different supervised learning models."),
                         h4("Modeling Info"),
@@ -41,19 +41,29 @@ shinyUI(fluidPage(
                             h5("Here you can scroll through the full data set, subset the data for specific columns and game years, and download the file as a csv.")
                ),
                tabPanel("Data Exploration",
+                        
                         # Numerical & Graphical Summaries
                         sidebarLayout(
                             sidebarPanel(
-                                
+                                selectInput("win_loose", label = "Game Outcome", 
+                                            choices = c("Winner","Loser"), selected = "Winner"),
+                                br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),
+                                selectInput("y_axis","Select Metric",choices = list("interception","penalty","sack","touchdown","fumble"),selected = "touchdown"),
+                                br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),
+                            selectInput("team","Team", choices= list("All","ARI","ATL","BAL","BUF","CAR","CHI","CIN","CLE","DAL","DEN","DET","GB","HOU","IND","JAC","KC","LV","LAC","LAR","MIA","MIN","NE","NO","NYG","NYJ","PHI","PIT","SF","SEA","TB","TEN","WAS"), selected ="All"),
+                            selectInput("position","Position", choices = list("All","C", "DB", "DE", "DL", "DT", "E", "FB", "FL", "G", "HB", "K", "LB", "MLB", "NG", "NT", "OG", "OL", "OLB", "OT", "P", "QB", "RB", "S", "SE", "T", "TB", "TE", "WB", "WR"), selected = "All"),
+                            selectInput("year", label = "Game Year", 
+                                        choices = c("All","2000","2001","2002","2003","2004","2005","2006","2007","2008","2009","2010","2011","2012","2013","2014","2015","2016","2017","2018","2019","2020"), selected = "All")
                             ),
                             mainPanel(
-                                h2("Final Scores for the last 21 years of the Superbowl"),
-                                DT::dataTableOutput("teams"),
                                 plotOutput("bar_1"),
-                                plotOutput("bar_2")
+                                plotOutput("bar_2"),
+                                h2("Season Roster"),
+                                DT::dataTableOutput("mytable2"),
+                                h2("Final Scores for the last 21 years of the Superbowl"),
+                                DT::dataTableOutput("teams")
                             )
-                        )
-               ),
+               )),
                navbarMenu("Modeling",
                           tabPanel("Model 1"),
                           tabPanel("Model 2"),
@@ -84,7 +94,7 @@ shinyUI(fluidPage(
                             ),
                             mainPanel(
                                 h2("Super Bowl Data"),
-                                DT::dataTableOutput("mytable"),
+                                DT::dataTableOutput("mytable")
                             )
                         )
                )
