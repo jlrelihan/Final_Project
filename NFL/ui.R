@@ -74,7 +74,7 @@ shinyUI(fluidPage(
                                            h2("Model Details:"),
                                            h5("Linear Regression Models: Supervised learning includes regression models, tree based methods, and k nearest neighbors. The basic linear regression model includes a response, a value of our explanatory variable for the ith observation, the y-intercept, and the slope. The model aims to show a linear approach for modeling the relationship between predictors and some response. The model is fit by minimizing the sum of squared residuals, which is equivalent to assuming normality on  errors and using maximum liklihood to estimate the beta's. In R, the basic linear model fits done with lm(). When utilizing lm() in R, statistical analysis can be found using anova() or summary()."),
                                            br(),
-                                           h5("Classification Tree: "),
+                                           h5("Classification Tree: The goal is to classify group membership for a given region, usually using the most prevalent class as prediction. They are easy to understand and interpret and there are no statistical assumptions necessary. Small changes in the data can vastly change the tree and they usually need to be pruned."),
                                            br(),
                                            h5("Random Forest Model: Random Forest modeling falls under supervised learning. It builds an ensemble of decision trees which help to get a more accurate prediction. The RF model extends the idea of bagging, generally better than bagging. It creates multiple trees from bootstrap samples.  ")
                                        )
@@ -108,7 +108,8 @@ shinyUI(fluidPage(
                                            
                                        ),
                                        mainPanel(
-                                           
+                                           h2("Linear Regression Prediction"),
+                                           DT::dataTableOutput("mytable6")
                                        )
                                    )
                                    )

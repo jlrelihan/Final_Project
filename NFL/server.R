@@ -10,9 +10,9 @@ library(DT)
 library(ggplot2)
 library(ggimage)
 library(caret)
-library(tidyverse) 
-
-
+library(tidyverse)
+library(stats)
+library(tree)
 
 shinyServer(function(input, output) {
     # Bring in data set
@@ -281,22 +281,42 @@ shinyServer(function(input, output) {
     })
         
     # Classification Tree
-        
+        fit3<- reactive({
+            fullfit <- tree(wp ~ yards_after_catch + ydstogo + yards_gained,
+                            data= TrainData())
+            results <- summary(fullfit)
+            results
+        })
+        #Putting model results together
+        output$mytable4 <- renderDataTable({
+            fit3()
+        })
         
     # Random Forest Model
     fit2 <- reactive({
-        rfFit <- train(wp ~.,   
+        rfFit <- train(wp ~ yards_after_catch + ydstogo + yards_gained,   
                        data = TrainData(),
                        method = "ranger",  
                        preProcess = c("center", "scale"),  
                        trControl = trainControl(method = "repeatedcv", number = 5, repeats = 3),
                        tuneGrid = data.frame(mtry = seq(1,10,1)))  
-        results <- data.frame(t(rfFit$results)) 
+        results <- data.frame(t(rfFit)) 
         results
+    })
+    #Putting model results together
+    output$mytable5 <- renderDataTable({
+        fit2()
     })
     
    
-
+    #Predictions
+    output$mytable6 <- renderDataTable({
+        pred <- predict(fit2, newdata = TestData)  
+        A <- postResample(pred2, obs = TestData$shares)  
+        Predictions <- t(rbind(A[1]))  
+        colnames(Predictions) <- c("Linear Model")  
+        Predictions
+    })
     
     
     })
