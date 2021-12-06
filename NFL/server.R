@@ -9,6 +9,8 @@ library(tidyr)
 library(DT)
 library(ggplot2)
 library(ggimage)
+library(caret)
+library(tidyverse) 
 
 
 
@@ -174,5 +176,127 @@ shinyServer(function(input, output) {
         datasetInput2()
     })
 
+    
+    # Model Fitting:
+    
+    # Split the data -70% train and 30% test as default or user specified. The target variable is 'touchdown'
+    TrainData <- reactive(
+        if(input$train == "0.7") {
+            set.seed(123)
+            train <- sample(1:nrow(super_bowl),size = nrow(super_bowl)*0.7)
+            Train <- super_bowl[train,]
+        }
+        else if(input$train != "0.7"){
+            set.seed(123)
+            train <- sample(1:nrow(super_bowl),size = nrow(super_bowl)*input$train)
+            Train <- super_bowl[train,]
+        }
+    )
+    TestData <- reactive(
+        if(input$test == "0.3") {
+            set.seed(123)
+            test <- dplyr::setdiff(1:nrow(super_bowl),train) 
+            Test <- super_bowl[test,]
+        }
+        else if(input$test != "0.3"){
+            set.seed(123)
+            test <- dplyr::setdiff(1:nrow(super_bowl),input$test) 
+            Test <- super_bowl[test,]
+        }
+    )
+    
+    # Text output telling you how the training and test data set are split.
+    output$info <- renderText({
+        #paste info
+        paste("The Training Data set is split ", input$train,"%. The Test Data set is split", input$test,"%.")
+    })
+    
+    # Model Fits
+    fit1 <- reactive({
+        if(input$target_var == "touchdown"){
+            fit1_results<- train(touchdown ~ yards_after_catch + ydstogo + yards_gained, 
+                                 data = TrainData(),  
+                                 method = "lm",   
+                                 preProcess = c("center", "scale"),  
+                                 na.action=na.omit,
+                                 trControl = trainControl(method = "cv", number = 10))
+            results <- data.frame(t(fit1_results$results)) 
+            results
+        }
+        else if(input$target_var == "wp"){
+            fit1_results<- train(wp ~ yards_after_catch + ydstogo + yards_gained, 
+                                 data = TrainData(),  
+                                 method = "lm",   
+                                 preProcess = c("center", "scale"),  
+                                 na.action=na.omit,
+                                 trControl = trainControl(method = "cv", number = 10))
+            results <- data.frame(t(fit1_results$results)) 
+            results
+        }
+        else if(input$target_var == "pass_touchdown"){
+            fit1_results<- train(pass_touchdown ~ yards_after_catch + ydstogo + yards_gained, 
+                                 data = TrainData(),  
+                                 method = "lm",   
+                                 preProcess = c("center", "scale"),  
+                                 na.action=na.omit,
+                                 trControl = trainControl(method = "cv", number = 10))
+            results <- data.frame(t(fit1_results$results)) 
+            results
+        }
+        else if(input$target_var == "rush_touchdown"){
+            fit1_results<- train(rush_touchdown ~ yards_after_catch + ydstogo + yards_gained, 
+                                 data = TrainData(),  
+                                 method = "lm",   
+                                 preProcess = c("center", "scale"),  
+                                 na.action=na.omit,
+                                 trControl = trainControl(method = "cv", number = 10))
+            results <- data.frame(t(fit1_results$results)) 
+            results
+        }
+        else if(input$target_var == "return_touchdown"){
+            fit1_results<- train(return_touchdown ~ yards_after_catch + ydstogo + yards_gained, 
+                                 data = TrainData(),  
+                                 method = "lm",   
+                                 preProcess = c("center", "scale"),  
+                                 na.action=na.omit,
+                                 trControl = trainControl(method = "cv", number = 10))
+            results <- data.frame(t(fit1_results$results)) 
+            results
+        }
+        else if(input$target_var == "field_goal_attempt"){
+            fit1_results<- train(field_goal_attempt ~ yards_after_catch + ydstogo + yards_gained, 
+                                 data = TrainData(),  
+                                 method = "lm",   
+                                 preProcess = c("center", "scale"),  
+                                 na.action=na.omit,
+                                 trControl = trainControl(method = "cv", number = 10))
+            results <- data.frame(t(fit1_results$results)) 
+            results
+        }
+    })
+    
+    #Putting model results together
+    output$mytable3 <- renderDataTable({
+        fit1()
+    })
+        
+    # Classification Tree
+        
+        
+    # Random Forest Model
+    fit2 <- reactive({
+        rfFit <- train(wp ~.,   
+                       data = TrainData(),
+                       method = "ranger",  
+                       preProcess = c("center", "scale"),  
+                       trControl = trainControl(method = "repeatedcv", number = 5, repeats = 3),
+                       tuneGrid = data.frame(mtry = seq(1,10,1)))  
+        results <- data.frame(t(rfFit$results)) 
+        results
+    })
+    
+   
+
+    
     
     })
