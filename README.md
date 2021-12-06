@@ -1,37 +1,37 @@
-## Welcome to GitHub Pages
-
-You can use the [editor on GitHub](https://github.com/jlrelihan/Final_Project/edit/main/README.md) to maintain and preview the content for your website in Markdown files.
-
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
-
-### Markdown
-
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
-
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [Basic writing and formatting syntax](https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/jlrelihan/Final_Project/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+This app lets you explore NFL Superbowl Data over the past 20 years.
+• A list of packages needed to run the app:
+library(shiny)
+library(magrittr)
+library(nflfastR)
+library(gsisdecoder)
+library(future)
+plan(multisession)
+library(dplyr)
+library(tidyr)
+library(DT)
+library(ggplot2)
+library(ggimage)
+library(caret)
+library(tidyverse)
+library(stats)
+library(tree)
+• A line of code that would install all the packages used (so we can easily grab that and run it prior to
+running your app).
+install.packages("shiny")
+install.packages("magrittr")
+install.packages("nflfastR")
+install.packages("gsisdecoder")
+install.packages("future")
+install.packages("dplyr")
+install.packages("tidyr")
+install.packages("DT")
+install.packages("ggplot2")
+install.packages("ggimage")
+install.packages("caret")
+install.packages("tidyverse")
+install.packages("stats")
+install.packages("tree")
+• The shiny::runGitHub() code that we can copy and paste into RStudio to run your app.
+runGitHub("jlrelihan/Final_Project", username = "jlrelihan", ref = "main",
+          subdir = "NFL", port = NULL,
+          launch.browser = getOption("shiny.launch.browser", interactive()))
